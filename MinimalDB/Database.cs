@@ -29,9 +29,7 @@ public class Database
     public void Insert<T>(T obj) where T : class
     {
         if (obj == null)
-        {
             throw new ArgumentException();
-        }
 
         var json = JsonSerializer.Serialize(obj, _jsonSerializerOptions);
         var properties = typeof(T).GetProperties();
@@ -95,14 +93,12 @@ public class Database
     public bool Commit()
     {
         lock (_pendingChanges)
-        {
             while (_pendingChanges.Count > 0)
             {
                 var change = _pendingChanges.Dequeue();
                 if (!CommitChange(change))
                     return false;
             }
-        }
         return true;
     }
 
