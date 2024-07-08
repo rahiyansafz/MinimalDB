@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 using Newtonsoft.Json.Linq;
 
@@ -14,13 +9,24 @@ public static class JArrayExtensions
     {
         var list = new List<T>();
 
+        var meta = array.FirstOrDefault(x => x["metadata"] != null);
+        meta?.Remove();
+
         foreach (var child in array.Children())
         {
+            if (child == array.First)
+            {
+                continue;
+            }
+
             var json = child.ToString(Newtonsoft.Json.Formatting.None);
+
             var item = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
             if (item != null)
                 list.Add(item);
         }
+
         return list;
     }
 }

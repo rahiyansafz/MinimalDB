@@ -3,15 +3,16 @@ public class FileAccess
 {
     public static string GetJsonFromDb(string filename)
     {
-        string path = $"{Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.FullName}\\{filename}";
-
+        string? path = filename.Split('\\').Length > 1
+            ? filename
+            : $"{Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.FullName}\\{filename}";
         if (!File.Exists(path))
         {
             var stream = File.Open(path, FileMode.Create);
 
             stream.Dispose();
 
-            File.WriteAllText(path, "[]");
+            File.WriteAllText(path, "{}");
         }
 
         return File.ReadAllText(path);
